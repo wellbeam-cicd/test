@@ -42,7 +42,10 @@ pipeline {
                     echo "ENV_SHORT             : ${ENV_SHORT}"
                     echo "SOFT                  : ${SOFT}"
                     echo "CLUSTER_NAME          : ${CLUSTER_NAME}"
-                    echo "BRANCH                : ${BRANCH}"
+                    echo "BRANCH                : ${GIT_BRANCH}"
+
+                    BRANCH_NAME = "${GIT_BRANCH.replaceFirst(/^.*\//, '')}"
+                    echo "BRANCH_NAME           : ${GIT_BRANCH}"
 
                     echo "We are starting execute of build of QA environment"
                     build(job: "sub-testing-backend",
@@ -52,7 +55,7 @@ pipeline {
                         string(name: 'ENV_SHORT', value: "${ENV_SHORT}"),
                         string(name: 'SOFT', value: "${SOFT}"),
                         string(name: 'CLUSTER_NAME', value: "${CLUSTER_NAME}"),
-                        string(name: 'BRANCH', value: "${BRANCH}")])
+                        string(name: 'BRANCH', value: "${BRANCH_NAME}")])
                 }
             }
         } 
