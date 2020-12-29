@@ -1,0 +1,60 @@
+pipeline {
+
+    agent {label 'slaveonmaster'}
+
+    options{
+        ansiColor('xterm')
+        timestamps ()
+    }
+
+    parameters {
+        string(defaultValue: "testing", description: 'Environment name. Long', name: 'ENV_LONG')
+        string(defaultValue: "test", description: 'Environment name. Short', name: 'ENV_SHORT')
+        string(defaultValue: "backend", description: 'Which Soft type', name: 'SOFT')
+        string(defaultValue: "testing-backend-ECSCluster", description: 'Name of cluster', name: 'CLUSTER_NAME')
+    }
+
+    environment {
+        REGION="us-east-2"                
+        ENV_LONG="${params.ENV_LONG}"                
+        ENV_SHORT="${params.ENV_SHORT}"                
+        SOFT="${params.SOFT}"                
+        CLUSTER_NAME="${params.CLUSTER_NAME}"                
+    }
+
+    stages {
+        stage('Remove old sources'){
+            steps {
+                echo 'remove old resources'
+                timeout(time: 3, unit: 'MINUTES') {
+                    retry(5) {
+                        cleanWs()
+                    }
+                }
+            }
+        }
+
+        stage('Execute of build of QA environment'){
+            steps {
+                script {
+                    echo "REGION                : ${REGION}"
+                    echo "ENV_LONG              : ${ENV_LONG}"
+                    echo "ENV_SHORT             : ${ENV_SHORT}"
+                    echo "SOFT                  : ${SOFT}"
+                    echo "CLUSTER_NAME          : ${CLUSTER_NAME}"
+                    echo "BRANCH                : ${GIT_BRANCH}"
+
+                    echo "We are starting execute of build of QA environment"
+                    build(job: "sub-testing-backend",
+                        parameters:
+                        [string(name: 'REGION', value: "${REGION}"),
+                        string(name: 'ENV_LONG', value: "${ENV_LONG}"),
+                        string(name: 'ENV_SHORT', value: "${ENV_SHORT}"),
+                        string(name: 'SOFT', value: "${SOFT}"),
+                        string(name: 'CLUSTER_NAME', value: "${CLUSTER_NAME}"),
+                        string(name: 'BRANCH', value: "${GIT_BRANCH}")])
+                }
+            }
+        } 
+    }
+}
