@@ -43,7 +43,7 @@ pipeline {
                     echo "SOFT                  : ${SOFT}"
                     echo "CLUSTER_NAME          : ${CLUSTER_NAME}"
                     echo "BRANCH                : ${GIT_BRANCH}"
-                    echo "BRANCH                : ${BRANCH_NAME}"
+                    echo "BRANCH                : ${GIT_BRANCH_LOCAL}"
 
                     echo "We are starting execute of build of QA environment"
                     build(job: "sub-testing-backend",
