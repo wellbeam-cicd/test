@@ -45,7 +45,7 @@ pipeline {
                     echo "BRANCH                : ${GIT_BRANCH}"
 
                     BRANCH_NAME = "${GIT_BRANCH.replaceFirst(/^.*\//, '')}"
-                    echo "BRANCH_NAME           : ${GIT_BRANCH}"
+                    echo "BRANCH_NAME           : ${BRANCH_NAME}"
 
                     echo "We are starting execute of build of QA environment"
                     build(job: "sub-testing-backend",
